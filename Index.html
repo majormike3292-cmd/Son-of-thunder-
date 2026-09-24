@@ -1,1 +1,330 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>JAKE — SONS OF THUNDER ⚡</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  background:#050505;
+  color:white;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  min-height:100dvh;
+  padding:90px 20px 45px;
+  position:relative;
+  overflow:hidden;
+}
+
+.screen.active{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  animation:screenIn .65s ease both;
+}
+
+@keyframes screenIn{
+  from{
+    opacity:0;
+    transform:translateX(35px) scale(.98);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+
+.screen:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(255,180,0,.15),transparent 35%),
+    radial-gradient(circle at 20% 80%,rgba(255,70,0,.10),transparent 30%);
+  pointer-events:none;
+}
+
+.content{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:650px;
+  text-align:center;
+}
+
+h1{
+  margin:0 0 15px;
+  font-size:clamp(38px,11vw,76px);
+  line-height:.95;
+  font-weight:1000;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+  text-shadow:
+    0 0 8px rgba(255,170,0,.5),
+    0 0 35px rgba(255,70,0,.25);
+}
+
+h2{
+  margin:0 0 18px;
+  font-size:clamp(28px,8vw,52px);
+  text-transform:uppercase;
+  font-weight:1000;
+}
+
+p{
+  margin:10px auto;
+  max-width:590px;
+  font-size:18px;
+  line-height:1.65;
+  color:#e8e8e8;
+}
+
+.small{
+  font-size:14px;
+  color:#aaa;
+}
+
+.highlight{
+  color:#ffbd27;
+  font-weight:900;
+}
+
+.quote{
+  margin:25px auto;
+  padding:20px;
+  border-left:4px solid #ffb300;
+  background:rgba(255,255,255,.055);
+  border-radius:0 15px 15px 0;
+  text-align:left;
+  font-size:20px;
+  line-height:1.55;
+}
+
+.btn{
+  position:relative;
+  z-index:5;
+  border:0;
+  margin:13px 0 0;
+  padding:17px 25px;
+  width:min(100%,460px);
+  border-radius:16px;
+  color:#050505;
+  background:linear-gradient(135deg,#fff2a6,#ffb300,#ff6500);
+  font-size:17px;
+  font-weight:1000;
+  letter-spacing:.5px;
+  box-shadow:
+    0 8px 30px rgba(255,130,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.8);
+  cursor:pointer;
+  transition:.18s;
+}
+
+.btn:active{
+  transform:scale(.96);
+}
+
+.btn.dark{
+  color:white;
+  background:#171717;
+  border:1px solid #444;
+  box-shadow:none;
+}
+
+.btn.next{
+  margin-top:28px;
+}
+
+#journeyBar{
+  position:fixed;
+  z-index:1000;
+  top:0;
+  left:0;
+  right:0;
+  padding:10px 14px 9px;
+  background:rgba(0,0,0,.88);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+#journeyInfo{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  color:#bbb;
+}
+
+#journeyFillWrap{
+  height:5px;
+  background:#242424;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+#journeyFill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ff5e00,#ffd34e);
+  border-radius:10px;
+  transition:width .5s ease;
+}
+
+#milestone{
+  position:fixed;
+  z-index:2000;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.7);
+  width:min(88%,430px);
+  padding:30px 22px;
+  border:1px solid rgba(255,190,40,.45);
+  border-radius:25px;
+  text-align:center;
+  background:rgba(12,12,12,.96);
+  box-shadow:0 0 80px rgba(255,130,0,.25);
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+
+#milestone.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+#milestoneIcon{
+  font-size:48px;
+  margin-bottom:10px;
+}
+
+#milestoneTitle{
+  font-size:23px;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+
+#milestoneText{
+  color:#ccc;
+  line-height:1.5;
+  margin-top:8px;
+}
+
+.lightning{
+  position:fixed;
+  pointer-events:none;
+  z-index:3000;
+  font-size:35px;
+  animation:bolt .7s ease forwards;
+}
+
+@keyframes bolt{
+  0%{
+    opacity:1;
+    transform:scale(.5) rotate(-10deg);
+  }
+  100%{
+    opacity:0;
+    transform:scale(1.7) rotate(10deg) translateY(-50px);
+  }
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 13px;
+  border-radius:30px;
+  background:rgba(255,183,0,.12);
+  border:1px solid rgba(255,183,0,.3);
+  color:#ffc84d;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  margin-bottom:15px;
+}
+
+.card{
+  padding:22px;
+  margin:15px 0;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:22px;
+}
+
+.big{
+  font-size:clamp(50px,15vw,90px);
+  font-weight:1000;
+  margin:10px 0;
+}
+
+#daughterPreview{
+  width:150px;
+  height:150px;
+  object-fit:cover;
+  border-radius:50%;
+  border:4px solid #ffb300;
+  box-shadow:0 0 35px rgba(255,170,0,.3);
+  display:none;
+  margin:15px auto;
+}
+
+input[type=file]{
+  display:none;
+}
+
+.upload{
+  display:block;
+  width:min(100%,460px);
+  margin:15px auto;
+  padding:16px;
+  border:1px dashed #777;
+  border-radius:15px;
+  color:#ddd;
+  background:#111;
+  font-weight:800;
+  cursor:pointer;
+}
+
+#revMeter{
+  height:25px;
+  margin:25px 0;
+  border-radius:20px;
+  background:#191919;
+  overflow:hidden;
+  border:1px solid #333;
+}
+
+#revFill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#ff4000,#ffd000);
+}
+
+#raceTrack{
+  position:relative;
+  height:110px;
+  margin:25px 0;
+  border:2px solid #333;
+  border-radius
